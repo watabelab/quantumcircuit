@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Circlecc from "./circlecc";
 
 var put_i = 0;
@@ -10,13 +10,15 @@ const CControlgate = ({ image }) => {
 
   var imgx, imgy;
 
+  const init_x = 1000;
+  const init_y = 250;
+
   switch (name) {
     case "CCX":
-      imgx = 820;
-      imgy = 250;
+      imgx = init_x;
+      imgy = init_y;
       break;
   }
-
 
   const id_image = name + "_" + String(id);
   // flag=0：移動中 flag=1：配置後
@@ -33,6 +35,12 @@ const CControlgate = ({ image }) => {
     isDrag: false,
   });
 
+  //
+  useEffect(() => {
+    if (state.isDrag) document.body.style.cursor = "grabbing";
+    else document.body.style.cursor = "default";
+  }, [state.isDrag]);
+
   // 以下，マウスイベントの関数の処理
   const handleDown = (e) => {
     const item = nodeRef.current;
@@ -45,41 +53,68 @@ const CControlgate = ({ image }) => {
     // console.log(state.isDrag);
   };
 
+  // 左上の判定点の座標．ここをずらせば全体もずれる．
+  // x方向は幅120．y方向は幅110．これはあまり変わらなそう．
+  const init_x_position = 230;
+  const init_y_position = 100;
   const handleMove = (e) => {
-    // console.log("move" + state.isDrag);
-    if (state.isDrag) {
-      e.preventDefault();
-      setState({
-        ...state,
-        image_Y: e.pageY - state.y,
-        image_X: e.pageX - state.x,
-      });
-      //  テスト用．左上の場所に当たり判定
-      var image_center_x = state.image_X + 42.5;
-      var image_center_y = state.image_Y + 42.5;
-      var a = 20; // 当たり判定の幅
-
-      var count = 0;
-
-      for (let i = 0; i < 4; i++) {
-        for (let j = 0; j < 5; j++) {
-          if (
-            image_center_x >= 110 + 120 * j - a &&
-            image_center_x <= 110 + 120 * j + a &&
-            image_center_y >= 100 + 110 * i - a &&
-            image_center_y <= 100 + 110 * i + a
-          ) {
-            put_i = i;
-            put_j = j;
-            count++;
-          }
+    var a = 30;
+    for (let i = 0; i < 4; i++) {
+      for (let j = 0; j < 6; j++) {
+        if (
+          state.image_X + 40 >= init_x_position + 120 * j - a &&
+          state.image_X + 40 <= init_x_position + 120 * j + a &&
+          state.image_Y + 40 >= init_y_position + 110 * i - a &&
+          state.image_Y + 40 <= init_y_position + 110 * i + a
+        ) {
+          console.log("fuck");
+          // setState({ ...state, image_Y: 100 + 110 * i - 42.5, image_X: 110 + 120 * j - 42.5 });
+          setState((prevState) => ({
+            ...prevState,
+            image_Y: init_y_position + 110 * i - 40,
+            image_X: init_x_position + 120 * j - 40,
+          }));
+          //console.log(state.image_X,state.image_Y)
         }
       }
-      if (count > 0) {
-        setFlag(1);
-      } else {
-        setFlag(0);
+    }
+    if (state.isDrag) {
+      e.preventDefault();
+      // setState({
+      //   ...state,
+      //   image_Y: e.pageY - state.y,
+      //   image_X: e.pageX - state.x,
+      // });
+      setState((prevState) => ({
+        ...prevState,
+        image_Y: e.pageY - state.y,
+        image_X: e.pageX - state.x,
+      }));
+    }
+    var image_center_x = state.image_X + 42.5;
+    var image_center_y = state.image_Y + 42.5;
+    var a = 20; // 当たり判定の幅
+
+    var count = 0;
+
+    for (let i = 0; i < 4; i++) {
+      for (let j = 0; j < 6; j++) {
+        if (
+          image_center_x >= init_x_position + 120 * j - a &&
+          image_center_x <= init_x_position + 120 * j + a &&
+          image_center_y >= init_y_position + 110 * i - a &&
+          image_center_y <= init_y_position + 110 * i + a
+        ) {
+          put_i = i;
+          put_j = j;
+          count++;
+        }
       }
+    }
+    if (count > 0) {
+      setFlag(1);
+    } else {
+      setFlag(0);
     }
   };
 
@@ -90,7 +125,7 @@ const CControlgate = ({ image }) => {
 
   const { image_X, image_Y } = state;
   const nodeRef = React.createRef();
-  var dot_list = [1, 2];
+
   if (flag == 0) {
     // 移動中
     return (
@@ -118,8 +153,8 @@ const CControlgate = ({ image }) => {
     return (
       <div>
         <Circlecc
-          imgx={110 + 120 * put_j}
-          imgy={100 + 110 * put_i}
+          imgx={init_x_position + 120 * put_j}
+          imgy={init_y_position + 110 * put_i}
           circle_id={id_image}
           put_i={put_i}
           put_j={put_j}

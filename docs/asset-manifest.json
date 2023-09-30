@@ -1,0 +1,15 @@
+{
+  "files": {
+    "main.css": "/quantumcircuit_web/static/css/main.073c9b0a.css",
+    "main.js": "/quantumcircuit_web/static/js/main.acd87936.js",
+    "static/js/787.f2c46341.chunk.js": "/quantumcircuit_web/static/js/787.f2c46341.chunk.js",
+    "index.html": "/quantumcircuit_web/index.html",
+    "main.073c9b0a.css.map": "/quantumcircuit_web/static/css/main.073c9b0a.css.map",
+    "main.acd87936.js.map": "/quantumcircuit_web/static/js/main.acd87936.js.map",
+    "787.f2c46341.chunk.js.map": "/quantumcircuit_web/static/js/787.f2c46341.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.073c9b0a.css",
+    "static/js/main.acd87936.js"
+  ]
+}
